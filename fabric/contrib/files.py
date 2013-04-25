@@ -115,13 +115,23 @@ def upload_template(filename, destination, context=None, use_jinja=False,
         func("cp %s{,.bak}" % _expand_path(destination))
 
     # Upload the file.
-    return put(
-        local_path=StringIO(text),
-        remote_path=destination,
-        use_sudo=use_sudo,
-        mirror_local_mode=mirror_local_mode,
-        mode=mode
-    )
+    #return put(
+    #    local_path=StringIO(text),
+    #    remote_path=destination,
+    #    use_sudo=use_sudo,
+    #    mirror_local_mode=mirror_local_mode,
+    #    mode=mode
+    #)
+    with tempfile.TemporaryFile() as tmp:
+        tmp.write(text.encode('utf-8'))
+
+        return put(
+            local_path=tmp,
+            remote_path=destination,
+            use_sudo=use_sudo,
+            mirror_local_mode=mirror_local_mode,
+            mode=mode
+        )
 
 
 def sed(filename, before, after, limit='', use_sudo=False, backup='.bak',
